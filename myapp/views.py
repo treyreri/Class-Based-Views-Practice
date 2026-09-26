@@ -29,7 +29,7 @@ class ProductDetailView(DetailView):
         # 3 Возвращаем обновленный словарь
         return context
 
-
+from .forms import ProductForm
 from django.views.generic import ListView, DetailView, CreateView , UpdateView, DeleteView
 class ProductCreateView(CreateView): # CreateView создаёт новый объект
     model = Product
@@ -49,8 +49,10 @@ class ProductCreateView(CreateView): # CreateView создаёт новый об
         form = super().get_form(form_class)
         form.fields['name'].required = False
         return form
+    def get_success_url(self):
+        return reverse_lazy('product-list')
 
-
+from .forms import ProductForm
 class ProductUpdateView(UpdateView): # UpdateView изменяет существующий объект
     model = Product
     form_class = ProductForm

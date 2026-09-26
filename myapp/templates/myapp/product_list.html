@@ -1,0 +1,29 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+
+<h2>Products</h2>
+
+<a href="{% url 'product-create' %}"> Create product </a>
+
+<hr>
+
+{% for product in object_list %}
+
+    <h3>
+        <a href="{% url 'product-detail' product.pk %}"> {{ product.name }} </a>
+    </h3>
+
+    <p>Price: {{ product.price }}</p>
+
+    <a href="{% url 'product-update' product.pk %}"> Edit </a>
+
+    <a href="{% url 'product-delete' product.pk %}"> Delete </a>
+
+    <hr>
+
+{% empty %} <p>No products yet </p>
+
+{% endfor %}
+
+{% endblock %}
