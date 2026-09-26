@@ -30,8 +30,8 @@ class ProductDetailView(DetailView):
         return context
 
 
-from django.views.generic import ListView, DetailView, CreateView
-class ProductCreateView(CreateView):
+from django.views.generic import ListView, DetailView, CreateView , UpdateView, DeleteView
+class ProductCreateView(CreateView): # CreateView создаёт новый объект
     model = Product
     form_class = ProductForm
     template_name = 'myapp/product_form.html'
@@ -49,3 +49,38 @@ class ProductCreateView(CreateView):
         form = super().get_form(form_class)
         form.fields['name'].required = False
         return form
+
+
+class ProductUpdateView(UpdateView): # UpdateView изменяет существующий объект
+    model = Product
+    form_class = ProductForm
+    template_name = 'myapp.product_form.html'
+
+    def get_object(self):
+        return Product.objects.get(pk = self.kwargs['pk'])
+
+from django.urls import reverse_lazy
+class ProductDeleteView(DeleteView):
+    model = Product
+    template_name = 'myapp/product_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse_lazy('product_list') #После удаления верни пользователя на список товаров
+
+from django.shortcuts import redirect
+class LoginRequiredProductMixin:
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect('/admin/login/')
+
+        return super().dispatch(request, *args, **kwargs)
+
+
+# get_queryset()       → ListView
+# get_object()         → Detail/Update/Delete
+# get_context_data()   → DetailView
+# form_valid()         → CreateView
+# form_invalid()       → CreateView
+# get_form()           → CreateView
+# get_success_url()    → Create/Update/Delete
+# dispatch()           → Mixin
